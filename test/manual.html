@@ -1,0 +1,145 @@
+<!doctype HTML>
+<html>
+<head>
+<script src="../src/nativeDialogGetContents.js"></script>
+</head>
+
+<body>
+<button class="btn" id="btn1">Cancel dialog with ESC.</button> <br>
+<button class="btn" id="btn2">Cancel dialog with cancel-button.</button> <br>
+<button class="btn" id="btn3">Ok dialog with double click on file.</button> <br>
+<button class="btn" id="btn4">Ok dialog with click on ok.</button> <br>
+<button class="btn" id="btn5">Ok dialog with enter.</button> <br>
+<button class="btn" id="btn6">Cancel dialog with ESC WHILE mouse cursor is outside browser.</button> <br>
+<hr>
+
+<button class="btn2" id="btn7">Cancel dialog with ESC (callback mode).</button> <br>
+<button class="btn2" id="btn8">Cancel dialog with cancel-button (callback mode).</button> <br>
+<button class="btn2" id="btn9">Ok dialog with double click on file (callback mode).</button> <br>
+<button class="btn2" id="btn10">Ok dialog with click on ok (callback mode).</button> <br>
+<button class="btn2" id="btn11">Ok dialog with enter (callback mode).</button> <br>
+<button class="btn2" id="btn12">Cancel dialog with ESC WHILE mouse cursor is outside browser (callback mode).</button> <br>
+
+<hr>
+
+
+<pre id="content" style="border: 1px solid grey; width: 600; height: 500px; overflow: auto; ">
+
+</pre>
+
+<script>
+var docEv = 0;
+var winEv = 0;
+
+function renderContent(txt) {
+	document.getElementById("content").textContent = txt;
+}
+
+function renderButton(id, txt) {
+	document.getElementById(id).textContent += txt;
+}
+
+function reset() {
+	setTimeout(function() {
+		document.body.style.backgroundColor = "#ffffff";
+	}, 600);
+}
+
+
+function assertEvents() {
+	if(docEv < 0) docEv = 0;
+	if(winEv < 0) winEv = 0;
+	if(docEv != 0) throw new Error("document event listeners not properly cleaned up: "+docEv);
+	if(winEv != 0) throw new Error("window event listeners not properly cleaned up: "+winEv);
+}
+
+function promiseMode(id) {
+	if(typeof Promise === "undefined") {
+		alert("Browser does not support Promises.");
+		reset();
+		return;
+	}
+	assertEvents()
+	nativeDialogGetContents.open()
+	.then(function(res) {
+		document.body.style.backgroundColor = "#00ff00";
+		renderButton(id, " PASS.");
+		renderContent("PASS \r\n "+res.data)		
+		reset();
+	})
+	.catch(function(res) {
+		
+		if(res.type === "cancel") {
+			renderButton(id, " PASS.");
+			renderContent("PASS \r\n Cancled.");
+			document.body.style.backgroundColor = "#00ff00";
+		}
+		else if(res.type === "fail") {
+			document.body.style.backgroundColor = "#ff0000";
+			renderButton(id, " FAIL.");
+			renderContent("Fail. "+JSON.stringify(res));
+			console.error(res);
+		}
+		
+		reset();
+	})
+}
+
+function callbackMode(id) {
+	nativeDialogGetContents.open(function(err, res){
+		console.log(err,res)
+		if(res == null && err.type === "cancel") {			
+			document.body.style.backgroundColor = "#00ff00";			
+			renderButton(id, " PASS.");
+			renderContent("PASS \r\n Cancled.");
+		}
+		else if(err == null) {
+			document.body.style.backgroundColor = "#00ff00";
+			renderButton(id, " PASS.");
+			renderContent("PASS \r\n "+res.data);			
+		}
+		else {
+			document.body.style.backgroundColor = "#ff0000";			
+			renderButton(id, " FAIL.");
+			renderContent("Fail. "+JSON.stringify(err));
+			console.error(err);
+		}	
+		reset();
+	});	
+}
+
+(function() {
+	var ii = document.querySelectorAll(".btn").length;
+	var ii2 = document.querySelectorAll(".btn2").length;
+
+	for(var i=1; i<=ii; i++) {
+		document.getElementById("btn"+i).addEventListener("click", function(event) {
+			document.body.style.backgroundColor = "grey";
+			promiseMode(event.target.id)
+		});
+	}
+
+	for(var i=ii+1; i<ii2+ii+1; i++) {
+		document.getElementById("btn"+i).addEventListener("click", function(event) {
+			document.body.style.backgroundColor = "grey";
+			callbackMode(event.target.id)
+		});
+	}
+})();
+
+(function() {
+	var docAddEv = document.addEventListener.bind(document); //bind for IE	
+	var winAddEv = window.addEventListener.bind(window);	
+	var docRemEv = document.removeEventListener.bind(document);	
+	var winRemEv = window.removeEventListener.bind(window);	
+	
+	document.addEventListener = function(type, callback, options) {docAddEv(type, callback, options); docEv++;}
+	document.removeEventListener = function(type, callback, options) {docRemEv(type, callback, options); docEv--;}	
+	window.addEventListener = function(type, callback, options) {winAddEv(type, callback, options); winEv++;}
+	window.removeEventListener = function(type, callback, options) {winRemEv(type, callback, options); winEv--;}
+})();
+	
+</script>
+
+</body>
+</html>
