@@ -8,7 +8,7 @@ Get the contents of a file **without a server**. Users can select the file via t
 - Load any file without a server.
 - OS handles loading for you.
 - Returns promise with the file contents. (Or use a callback if you prefer.)
-- Under the hood an <input> type "file" element is used. 
+- Under the hood an \<input\> type "file" element is used. 
 
 
 ## Requirements
@@ -23,14 +23,14 @@ As a standalone plugin it has a default namespace of "nativeDialogGetContents".
 ### open([<func>callback])
 
 ```
- nativeDialogGetContents.open()
-						.then((result)=>{
-							result.type; //done
-							result.data; //"contents of file"
-						})
-						.catch((e)=>{
-							e.type;// "cancel" || "error"
-						})
+nativeDialogGetContents.open()
+.then((result)=>{
+	result.type; //done
+	result.data; //"contents of file"
+})
+.catch((e)=>{
+	e.type;// "cancel" || "error"
+})
 						
 ```
 
