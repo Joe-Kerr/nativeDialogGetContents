@@ -139,6 +139,23 @@ function callbackMode(id) {
 	window.removeEventListener = function(type, callback, options) {winRemEv(type, callback, options); winEv--;}
 })();
 	
+	
+//mobile	
+(function(){
+	var log = console.log;
+
+	console.log = function(content) {
+
+		document.getElementById("content").textContent += content+"\r\n"
+
+		log.call(console, content)
+	}
+
+	window.onerror = function(message) {
+		console.log("ERR: "+message)
+	}
+})()	
+	
 </script>
 
 </body>
