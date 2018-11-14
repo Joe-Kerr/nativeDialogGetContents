@@ -6,7 +6,7 @@
 	// Close detection
 	//
 	
-	//anything with mouseover fails in Safari because mouseover fires when mouse enters dialog, i.e. always false positive cancel. 
+	//Anything with mouseover fails in Safari because mouseover fires when mouse enters dialog, i.e. always false positive cancel. 
 	
 	var strategies = {
 		
