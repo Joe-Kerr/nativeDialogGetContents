@@ -13,7 +13,7 @@ Get the contents of a file **without a server**. Users can select the file via t
 
 ## Requirements
 
-- Currently tested on IE11, FF latest, Chrome latest on Windows.
+- Tested on Edge, IE11, FF latest, Chrome latest on Windows. Firefox 57 on Fedora, Firefox 60 on Debian. Safari 10 on iOS. Android Firefox (v?), Samsung Internet (v?).
 
 
 ## Use
