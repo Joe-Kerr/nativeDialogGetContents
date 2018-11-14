@@ -6,30 +6,27 @@
 	// Close detection
 	//
 	
+	//anything with mouseover fails in Safari because mouseover fires when mouse enters dialog, i.e. always false positive cancel. 
+	
 	var strategies = {
 		
-		//Fails in Firefox but otherwise preferable strat.
+		//Fails in Firefox (Windows but not Linux) but otherwise preferable strat.
 		dialogCloseFocusesWindow: {
 			start: function() { window.addEventListener("focus", handleDialogClose, false);	},			
 			stop: function() { window.removeEventListener("focus", handleDialogClose, false); }			
-		},
+		},			
 		
-		//In Chrome and Firefox, fails if dialog is ESC'ed without having moved the mouse or the mouse being outside the document.
-		dialogCloseMouseOverDocument: {
-			timeout: -1,
-			start: function() {
-				this.timeout = setTimeout(function() {		
-					document.addEventListener("mouseover", handleDialogClose, true);		
-				},100);					
-			},			
-			stop: function() { clearTimeout(this.timeout); document.removeEventListener("mouseover", handleDialogClose, true); }
-		},
+		//In general, this is the fallback strategy as it should work cross-browser. 
+		//In Firefox, mouse move detected after dialog close. Hence only if the mouse does not move between triggering the dialog 
+		//  and canceling it (ESC), the cancel will not be detected. 
+		//In Chrome, IE any mouse move before dialog close not detected. Requires mouse to move after close. 
+		//  Hence user notices that his move ends the loading process (assuming you have visual cues such as a loading indicator).
+		//In Safari 10, mousemove triggers even if mouse not moved.		
 		
-		//Last line of defense. Works cross browser but requires mouse to move. Which neither happens if mouse outside document, or 
-		// after click on cancel or press on ESC. Hence user notices that his move ends the loading screen.				
 		dialogCloseMouseMoveDocument: {
 			timeout: -1,
 			start: function() {
+				//W/o timeout can fire before dialog open.
 				this.timeout = setTimeout(function() {			
 					document.addEventListener("mousemove", handleDialogClose);
 				},100);					
@@ -42,7 +39,7 @@
 		for(var p in strategies) strategies[p].start();
 	}
 
-	function handleDialogClose(event) {
+	function handleDialogClose(event) {	
 		browserCloserCleanup();
 	
 		//Dialog canceled; if not in long-enough(!) timeout, can fire before input-change event.
@@ -118,10 +115,10 @@
 		input.style.backgroundColor = "#ffffff";
 		
 		//If "none" at least Samsung Internet refuses to open dialog.
+		//If not "none" and moving input out of viewport (negative left), makes screen jump in Safari.
 		//input.style.display = "none";
-		input.style.position = "fixed";
-		input.style.left = "-600px";		
-
+		input.style.visibility = "hidden";
+		
 		document.body.appendChild(input);	
 		return input;
 	}

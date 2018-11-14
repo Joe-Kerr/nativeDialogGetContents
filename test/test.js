@@ -15,9 +15,9 @@ suite("nativeDialogGetContents.js");
 
 function cleanupTest(resolve) {
 	setTimeout(()=>{		
-		assert.equal(document.addEventListener.callCount, 2);
+		assert.equal(document.addEventListener.callCount, 1);
 		assert.equal(window.addEventListener.callCount, 1);	
-		assert.equal(document.removeEventListener.callCount, 2);
+		assert.equal(document.removeEventListener.callCount, 1);
 		assert.equal(window.removeEventListener.callCount, 1);	
 		
 		assert.equal(document.getElementById(fileLoaderId), null);
