@@ -56,9 +56,11 @@ nativeDialogGetContents.open(function(err, res) {
 ```
 
 
-## Known issues (to be addressed with this pre-release)
+## Known issues
 
-- On Firefox, when escaping or canceling the dialog, cleanup and Promise resultion happen only after the mouse has been moved over the document.
+- In Firefox (Windows), if you cancel the open-dialog with ESC without having moved the mouse since your click on the open trigger, the cancel action is only detected when you move the mouse after the open-dialog has closed. In practice this is rarely the case. If it does happen, cancel detection happens right after the first mouse move.
+
+- In some versions of Samsung Internet browsers an extra tap is required after cancelling file selection.
 
 - Testing native dialogs might not be possible. External tools are suggested that emulate key presses on OS level. Current approach: manual testing.
 
