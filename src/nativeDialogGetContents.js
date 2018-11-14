@@ -116,7 +116,11 @@
 		input.style.border = "0px #ffffff";
 		input.style.color = "#ffffff";
 		input.style.backgroundColor = "#ffffff";
-		input.style.display = "none";
+		
+		//If "none" at least Samsung Internet refuses to open dialog.
+		//input.style.display = "none";
+		input.style.position = "fixed";
+		input.style.left = "-600px";		
 
 		document.body.appendChild(input);	
 		return input;
