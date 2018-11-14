@@ -64,6 +64,8 @@ nativeDialogGetContents.open(function(err, res) {
 
 - Testing native dialogs might not be possible. External tools are suggested that emulate key presses on OS level. Current approach: manual testing.
 
+- Not sure how to deploy. Have two versions (esm and non-esm)? Please do not rely on file names yet :(
+
 
 ## Versions
 
